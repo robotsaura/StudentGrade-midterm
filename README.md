@@ -35,6 +35,7 @@ I utilized ChatGPT to assist with writing and debugging the code, ensuring the a
 
 ## Interesting to Note
 It wasn't working for the longest time and then I realized I wrote "App.py" and not "app.py" !!!! 
+Accuracy is 34%
 
 ## References
 https://www.kaggle.com/datasets/spscientist/students-performance-in-exams
