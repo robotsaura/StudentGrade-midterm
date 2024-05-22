@@ -1,33 +1,57 @@
-name: Deploy to Heroku
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
-
+        
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for all branches and tags
+        
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.9'
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        echo "Creating virtual environment..."
+        python -m venv venv
+        echo "Activating virtual environment..."
+        source venv/bin/activate
+        echo "Installing dependencies..."
         pip install -r requirements.txt
-
+        
+    - name: Install Heroku CLI
+      run: |
+        echo "Installing Heroku CLI..."
+        curl https://cli-assets.heroku.com/install.sh | sh
+        echo "Verifying Heroku CLI installation..."
+        heroku --version
+    
+    - name: Authenticate Heroku
+      env: 
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        echo "Authenticating with Heroku..."
+        echo -e "machine api.heroku.com\n  login $HEROKU_API_KEY\nmachine git.heroku.com\n  login 
+$HEROKU_API_KEY" > ~/.netrc
+        heroku auth:token
+        
     - name: Deploy to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
       run: |
-        heroku auth:token -i <<< "${{ secrets.HEROKU_API_KEY }}"
+        echo "Setting Heroku remote..."
         heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
-        git push heroku main
+        echo "Pushing to Heroku..."
+        git push https://heroku:$HEROKU_API_KEY@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git 
+HEAD:main
 
