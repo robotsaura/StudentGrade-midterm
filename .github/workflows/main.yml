@@ -40,8 +40,7 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
         echo "Authenticating with Heroku..."
-        echo -e "machine api.heroku.com\n  login $HEROKU_API_KEY\nmachine git.heroku.com\n  login 
-$HEROKU_API_KEY" > ~/.netrc
+        echo -e "machine api.heroku.com\n  login $HEROKU_API_KEY\nmachine git.heroku.com\n  login $HEROKU_API_KEY" > ~/.netrc
         heroku auth:token
         
     - name: Deploy to Heroku
@@ -52,6 +51,5 @@ $HEROKU_API_KEY" > ~/.netrc
         echo "Setting Heroku remote..."
         heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
         echo "Pushing to Heroku..."
-        git push https://heroku:$HEROKU_API_KEY@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git 
-HEAD:main
+        git push https://heroku:$HEROKU_API_KEY@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git HEAD:main
 
