@@ -22,9 +22,9 @@ jobs:
     - name: Install dependencies
       run: |
         echo "Creating virtual environment..."
-        python -m venv venv2
+        python -m venv venv
         echo "Activating virtual environment..."
-        source venv2/bin/activate
+        source venv/bin/activate
         echo "Installing dependencies..."
         pip install --upgrade pip
         pip install -r requirements.txt
